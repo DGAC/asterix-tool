@@ -1,0 +1,63 @@
+{
+  "name": "@dgac/asterix-tool",
+  "description": "",
+  "version": "0.1.0",
+  "author": "Benjamin BERET <benjamin.beret@aviation-civile.gouv.fr>",
+  "bin": {
+    "asterix-replay": "./bin/run"
+  },
+  "bugs": "https://github.com/DGAC/asterix-replay/issues",
+  "dependencies": {
+    "@oclif/command": "^1",
+    "@oclif/config": "^1",
+    "@oclif/plugin-help": "^2",
+    "pino": "^5.16.0",
+    "pino-pretty": "^3.6.0",
+    "tslib": "^1",
+    "unix-dgram": "^2.0.3"
+  },
+  "devDependencies": {
+    "@oclif/dev-cli": "^1",
+    "@types/multipipe": "^3.0.0",
+    "@types/node": "^10",
+    "@types/pino": "^5.15.5",
+    "@typescript-eslint/eslint-plugin": "^2.21.0",
+    "@typescript-eslint/parser": "^2.21.0",
+    "eslint": "^5.13",
+    "eslint-config-prettier": "^6.10.0",
+    "eslint-plugin-prettier": "^3.1.2",
+    "globby": "^10",
+    "prettier": "^1.19.1",
+    "ts-node": "^8",
+    "typescript": "^3.3"
+  },
+  "engines": {
+    "node": ">=10.0.0"
+  },
+  "files": [
+    "/bin",
+    "/lib"
+  ],
+  "homepage": "https://github.com/DGAC/asterix-replay",
+  "keywords": [
+    "oclif"
+  ],
+  "license": "MIT",
+  "main": "lib/index.js",
+  "oclif": {
+    "commands": "./lib/commands",
+    "bin": "asterix-tool",
+    "plugins": [
+      "@oclif/plugin-help"
+    ]
+  },
+  "repository": "DGAC/asterix-replay",
+  "scripts": {
+    "posttest": "eslint . --ext .ts --config .eslintrc.js",
+    "prepack": "rm -rf lib && tsc -b && oclif-dev readme",
+    "test": "echo NO TESTS",
+    "typecheck": "tsc --noEmit",
+    "version": "oclif-dev readme && git add README.md"
+  },
+  "types": "lib/index.d.ts"
+}

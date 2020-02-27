@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "declaration": true,
+    "importHelpers": true,
+    "module": "commonjs",
+    "esModuleInterop": true,
+    "outDir": "lib",
+    "rootDir": "src",
+    "strict": true,
+    "target": "es2017",
+    "typeRoots": ["./node_modules/@types", "./declarations"]
+  },
+  "include": ["src/**/*", "declarations/**/*"]
+}
