@@ -4,9 +4,9 @@
   "version": "0.1.0",
   "author": "Benjamin BERET <benjamin.beret@aviation-civile.gouv.fr>",
   "bin": {
-    "asterix-replay": "./bin/run"
+    "asterix-tool": "./bin/run"
   },
-  "bugs": "https://github.com/DGAC/asterix-replay/issues",
+  "bugs": "https://github.com/DGAC/asterix-tool/issues",
   "dependencies": {
     "@oclif/command": "^1",
     "@oclif/config": "^1",
@@ -38,7 +38,7 @@
     "/bin",
     "/lib"
   ],
-  "homepage": "https://github.com/DGAC/asterix-replay",
+  "homepage": "https://github.com/DGAC/asterix-tool",
   "keywords": [
     "oclif"
   ],
@@ -51,7 +51,7 @@
       "@oclif/plugin-help"
     ]
   },
-  "repository": "DGAC/asterix-replay",
+  "repository": "DGAC/asterix-tool",
   "scripts": {
     "posttest": "eslint . --ext .ts --config .eslintrc.js",
     "prepack": "rm -rf lib && tsc -b && oclif-dev readme",
