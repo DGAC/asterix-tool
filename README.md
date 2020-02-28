@@ -85,5 +85,5 @@ OPTIONS
   --version                            show CLI version
 ```
 
-_See code: [src/commands/replay.ts](https://github.com/DGAC/asterix-replay/blob/v0.1.0/src/commands/replay.ts)_
+_See code: [src/commands/replay.ts](https://github.com/DGAC/asterix-tool/blob/v0.1.0/src/commands/replay.ts)_
 <!-- commandsstop -->

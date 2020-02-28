@@ -3,6 +3,7 @@
   "description": "",
   "version": "0.1.0",
   "author": "Benjamin BERET <benjamin.beret@aviation-civile.gouv.fr>",
+  "license": "GPL3.0",
   "bin": {
     "asterix-tool": "./bin/run"
   },
