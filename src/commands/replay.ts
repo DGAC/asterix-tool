@@ -20,8 +20,6 @@ export default class Replay extends Command {
     'Forwards ASTERIX packets from a pcap file to a unix or udp socket';
 
   static flags = {
-    version: flags.version(),
-    help: flags.help({ char: 'h' }),
     destination: flags.string({
       char: 'd',
       default: 'udp4://localhost:8600',

@@ -20,14 +20,14 @@ export class PCAPParser extends Transform {
   private globalHeaders: undefined | GlobalHeaders;
   private lastPacketTs: undefined | Date;
   private shouldCancel: boolean = false;
-  private timeCompressionFactor: number = 1;
+  private timeCompressionFactor: null | number = 1;
 
   private log = logger.child({ name: 'PCAPParser' });
 
   constructor({
     timeCompressionFactor = 1,
     ...options
-  }: { timeCompressionFactor?: number } = {}) {
+  }: { timeCompressionFactor?: null | number } = {}) {
     super({
       ...options,
       readableObjectMode: true,
@@ -130,6 +130,15 @@ export class PCAPParser extends Transform {
                 return { done: true, value: null };
               }
 
+              // Buffered data has been processed, this async interator is done,
+              // allowing more data to be flushed into this stream
+              if (this.content.length < 16) {
+                return {
+                  done: true,
+                  value: null,
+                };
+              }
+
               const tsSec = this.content.readUInt32LE(0);
               const tsUSec = this.content.readUInt32LE(4);
               const inclLen = this.content.readUInt32LE(8);
@@ -145,8 +154,10 @@ export class PCAPParser extends Transform {
 
               this.content = this.content.slice(inclLen + 16);
               if (this.lastPacketTs) {
-                const timeOffset = ts.getTime() - this.lastPacketTs.getTime();
-                await delay(timeOffset / this.timeCompressionFactor);
+                if (!!this.timeCompressionFactor) {
+                  const timeOffset = ts.getTime() - this.lastPacketTs.getTime();
+                  await delay(timeOffset / this.timeCompressionFactor);
+                }
               }
 
               this.lastPacketTs = ts;
@@ -159,7 +170,10 @@ export class PCAPParser extends Transform {
                 },
               };
             } catch (err) {
-              logger.fatal('Unable to parse packet:', err.message);
+              logger.fatal(
+                `Unable to parse packet (#${this.count}):`,
+                err.message,
+              );
               process.exit(1);
               return { done: true, value: null };
             }

@@ -35,6 +35,7 @@ USAGE
 
 <!-- commands -->
 * [`asterix-tool help [COMMAND]`](#asterix-tool-help-command)
+* [`asterix-tool info SOURCE_FILE`](#asterix-tool-info-source_file)
 * [`asterix-tool replay SOURCE_FILE`](#asterix-tool-replay-source_file)
 
 ## `asterix-tool help [COMMAND]`
@@ -54,6 +55,25 @@ OPTIONS
 
 _See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v2.2.3/src/commands/help.ts)_
 
+## `asterix-tool info SOURCE_FILE`
+
+Prints statistics about a PCAP package containing ASTERIX messages
+
+```
+USAGE
+  $ asterix-tool info SOURCE_FILE
+
+ARGUMENTS
+  SOURCE_FILE  Source PCAP file.
+               (note: the file can only contain ASTERIX traffic)
+
+OPTIONS
+  -v, --verbose                Verbose output
+  --source-format=udp4|macllc  [default: udp4] Source format (udp4 or MAC/LLC)
+```
+
+_See code: [src/commands/info.ts](https://github.com/DGAC/asterix-tool/blob/v0.1.0/src/commands/info.ts)_
+
 ## `asterix-tool replay SOURCE_FILE`
 
 Forwards ASTERIX packets from a pcap file to a unix or udp socket
@@ -71,8 +91,6 @@ OPTIONS
                                        to.
                                        e.g: unix:/tmp/asterix.socket or udp4://localhost:8600
 
-  -h, --help                           show CLI help
-
   -n, --max-count=max-count            [default: Infinity] Number of messages forwarded before exiting
 
   -v, --verbose                        Verbose output
@@ -81,8 +99,6 @@ OPTIONS
 
   --time-compression=time-compression  [default: 1] Time compression factor.
                                        For instance, a value of 2 will process the file twice at fast as it was record.
-
-  --version                            show CLI version
 ```
 
 _See code: [src/commands/replay.ts](https://github.com/DGAC/asterix-tool/blob/v0.1.0/src/commands/replay.ts)_

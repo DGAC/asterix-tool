@@ -27,30 +27,39 @@ export class AsterixTransform extends Transform {
     encoding: string,
     done: TransformCallback,
   ): Promise<void> {
-    let start = 0;
+    try {
+      let start = 0;
 
-    do {
-      if (start >= packet.length) {
-        break;
-      }
+      do {
+        if (start >= packet.length) {
+          break;
+        }
 
-      const remainder = packet.slice(start);
+        const remainder = packet.slice(start);
 
-      const cat = AsterixTransform.readCategory(remainder);
-      const len = AsterixTransform.readLen(remainder);
+        const cat = AsterixTransform.readCategory(remainder);
+        const len = AsterixTransform.readLen(remainder);
+        if (!len) {
+          throw new Error(
+            'Could not extract length from ASTERIX packet. Is the file format right ?',
+          );
+        }
 
-      const asterix = remainder.slice(0, len);
-      start += len;
+        const asterix = remainder.slice(0, len);
+        start += len;
 
-      this.push({
-        ts,
-        cat,
-        len,
-        asterix,
-      });
-    } while (true);
+        this.push({
+          ts,
+          cat,
+          len,
+          asterix,
+        });
+      } while (true);
 
-    this.count++;
-    done();
+      this.count++;
+      done();
+    } catch (error) {
+      done(error);
+    }
   }
 }

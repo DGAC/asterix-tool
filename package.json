@@ -3,7 +3,7 @@
   "description": "",
   "version": "0.1.0",
   "author": "Benjamin BERET <benjamin.beret@aviation-civile.gouv.fr>",
-  "license": "GPL3.0",
+  "license": "MIT",
   "bin": {
     "asterix-tool": "./bin/run"
   },
@@ -12,8 +12,13 @@
     "@oclif/command": "^1",
     "@oclif/config": "^1",
     "@oclif/plugin-help": "^2",
+    "@types/cli-progress": "^3.4.2",
+    "cli-progress": "^3.6.0",
+    "cli-ux": "^5.4.5",
+    "date-fns": "^2.10.0",
     "pino": "^5.16.0",
     "pino-pretty": "^3.6.0",
+    "ramda": "^0.27.0",
     "tslib": "^1",
     "unix-dgram": "^2.0.3"
   },
@@ -22,6 +27,7 @@
     "@types/multipipe": "^3.0.0",
     "@types/node": "^10",
     "@types/pino": "^5.15.5",
+    "@types/ramda": "^0.26.43",
     "@typescript-eslint/eslint-plugin": "^2.21.0",
     "@typescript-eslint/parser": "^2.21.0",
     "eslint": "^5.13",
@@ -43,7 +49,6 @@
   "keywords": [
     "oclif"
   ],
-  "license": "MIT",
   "main": "lib/index.js",
   "oclif": {
     "commands": "./lib/commands",
