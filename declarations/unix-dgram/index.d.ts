@@ -7,14 +7,14 @@ declare module 'unix-dgram' {
     connect(path: string): void;
     send(
       msg: Buffer,
-      callback: Parameters<Socket['send']>[5],
+      callback: Parameters<Socket['send']>[3],
     ): ReturnType<Socket['send']>;
     send(
       msg: Buffer,
       offset: number,
       length: number,
       path: string,
-      callback: Parameters<Socket['send']>[5],
+      callback: Parameters<Socket['send']>[3],
     ): ReturnType<Socket['send']>;
     close(): void;
   }

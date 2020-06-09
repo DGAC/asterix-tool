@@ -36,7 +36,7 @@ export class StripHeaders extends Transform {
     }
   }
 
-  _transform(rawPacket: RawPacket, enc: string, cb: TransformCallback) {
+  _transform(rawPacket: RawPacket, enc: string, cb: TransformCallback): void {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const etherType = rawPacket.packet.readUInt16BE(12);
 

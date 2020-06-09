@@ -2,8 +2,11 @@ import fs from 'fs';
 import dgram from 'dgram';
 import unixDgram from 'unix-dgram';
 
-export const delay = (d: number, { unref = false }: { unref?: boolean } = {}) =>
-  new Promise(resolve => {
+export const delay = (
+  d: number,
+  { unref = false }: { unref?: boolean } = {},
+): Promise<void> =>
+  new Promise((resolve) => {
     const t = setTimeout(() => {
       resolve();
     }, d);
@@ -22,7 +25,7 @@ export async function createReadStream(
       resolve(st);
     });
 
-    st.on('error', err => {
+    st.on('error', (err) => {
       reject(err);
     });
   });
@@ -62,7 +65,7 @@ export async function createWriteStream<T extends Forwarder>(
               msg.length,
               config.port,
               config.hostname,
-              err => {
+              (err) => {
                 if (err) {
                   reject(err);
                   return;
@@ -84,7 +87,7 @@ export async function createWriteStream<T extends Forwarder>(
       return new Promise((resolve, reject) => {
         const client = unixDgram.createSocket('unix_dgram');
 
-        client.on('error', err => {
+        client.on('error', (err) => {
           reject(err);
         });
 
@@ -93,7 +96,7 @@ export async function createWriteStream<T extends Forwarder>(
             client,
             send: (msg: Buffer) =>
               new Promise((resolve, reject) => {
-                client.send(msg, err => {
+                client.send(msg, (err: Error | null | undefined) => {
                   if (err) {
                     reject(err);
                     return;

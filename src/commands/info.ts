@@ -77,7 +77,7 @@ export default class Info extends Command {
         progress.start(Math.floor(size / 1024), 0);
 
         let readBytes = 0;
-        sourceSt.on('data', buf => {
+        sourceSt.on('data', (buf) => {
           readBytes += buf.length;
           progress.update(Math.floor(readBytes / 1024));
         });
@@ -92,6 +92,7 @@ export default class Info extends Command {
           new Stream.Writable({
             objectMode: true,
             async write(obj, encoding, cb): Promise<void> {
+              console.log(obj);
               statistics.asterix.totalMessages++;
               statistics.asterix.categories[obj.cat] =
                 (statistics.asterix.categories[obj.cat] || 0) + 1;
@@ -129,7 +130,7 @@ export default class Info extends Command {
       this.log('\n');
 
       const categories = sortBy(
-        a => -a[1],
+        (a) => -a[1],
         Object.entries(stats.asterix.categories),
       );
 
@@ -157,10 +158,10 @@ export default class Info extends Command {
         metadata,
         {
           name: {
-            get: row => row[0],
+            get: (row) => row[0],
           },
           value: {
-            get: row => row[1],
+            get: (row) => row[1],
           },
         },
         {
@@ -172,10 +173,10 @@ export default class Info extends Command {
 
       cli.table(categories, {
         category: {
-          get: row => `CAT${row[0].toString().padStart(3, '0')}`,
+          get: (row) => `CAT${row[0].toString().padStart(3, '0')}`,
         },
         count: {
-          get: row => row[1],
+          get: (row) => row[1],
         },
       });
     } catch (error) {

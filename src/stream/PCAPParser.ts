@@ -36,13 +36,19 @@ export class PCAPParser extends Transform {
     this.timeCompressionFactor = timeCompressionFactor;
   }
 
-  _destroy(err: null | Error, cb: Function) {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  _destroy(err: null | Error, cb: (err: null | Error) => any): void {
     logger.trace('[PCAP]: Destroying !');
     this.shouldCancel = true;
     cb(err);
+    return;
   }
 
-  async _transform(chunk: unknown, encoding: string, cb: TransformCallback) {
+  async _transform(
+    chunk: unknown,
+    encoding: string,
+    cb: TransformCallback,
+  ): Promise<void> {
     if (!Buffer.isBuffer(chunk)) {
       throw new Error('Transformer only works on binary streams');
     }
@@ -70,7 +76,7 @@ export class PCAPParser extends Transform {
     cb();
   }
 
-  _flush(cb: TransformCallback) {
+  _flush(cb: TransformCallback): void {
     this.log.debug(`Successfully parsed ${this.count} captured packets`);
     cb();
   }

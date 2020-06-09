@@ -23,7 +23,7 @@ $ npm install -g @dgac/asterix-tool
 $ asterix-tool COMMAND
 running command...
 $ asterix-tool (-v|--version|version)
-@dgac/asterix-tool/0.1.0 linux-x64 node-v13.9.0
+@dgac/asterix-tool/0.1.0 linux-x64 node-v14.3.0
 $ asterix-tool --help [COMMAND]
 USAGE
   $ asterix-tool COMMAND
@@ -36,6 +36,7 @@ USAGE
 <!-- commands -->
 * [`asterix-tool help [COMMAND]`](#asterix-tool-help-command)
 * [`asterix-tool info SOURCE_FILE`](#asterix-tool-info-source_file)
+* [`asterix-tool proxy MULTICAST-GROUP`](#asterix-tool-proxy-multicast-group)
 * [`asterix-tool replay SOURCE_FILE`](#asterix-tool-replay-source_file)
 
 ## `asterix-tool help [COMMAND]`
@@ -53,7 +54,7 @@ OPTIONS
   --all  see all commands in CLI
 ```
 
-_See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v2.2.3/src/commands/help.ts)_
+_See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v3.1.0/src/commands/help.ts)_
 
 ## `asterix-tool info SOURCE_FILE`
 
@@ -73,6 +74,25 @@ OPTIONS
 ```
 
 _See code: [src/commands/info.ts](https://github.com/DGAC/asterix-tool/blob/v0.1.0/src/commands/info.ts)_
+
+## `asterix-tool proxy MULTICAST-GROUP`
+
+Proxies UDP multicast ASTERIX to a UNIX socket
+
+```
+USAGE
+  $ asterix-tool proxy MULTICAST-GROUP
+
+ARGUMENTS
+  MULTICAST-GROUP  Multicast group address.
+                   e.g: 232.1.1.1 or ff02::fb
+
+OPTIONS
+  -p, --port=port  [default: 8600] port.
+  -v, --verbose    Verbose output
+```
+
+_See code: [src/commands/proxy.ts](https://github.com/DGAC/asterix-tool/blob/v0.1.0/src/commands/proxy.ts)_
 
 ## `asterix-tool replay SOURCE_FILE`
 
