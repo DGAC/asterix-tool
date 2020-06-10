@@ -1,6 +1,4 @@
 import { Command, flags } from '@oclif/command';
-import * as fs from 'fs';
-import { URL } from 'url';
 import stream, { Stream } from 'stream';
 import { logger } from '../logger';
 import { PCAPParser } from '../stream/PCAPParser';
@@ -10,7 +8,9 @@ import {
   createReadStream,
   createWriteStream,
   DestinationStreamConfig,
+  parseDestination,
 } from '../utils';
+import * as appFlags from '../flags';
 
 import { promisify } from 'util';
 const pipeline = promisify(stream.pipeline);
@@ -20,23 +20,13 @@ export default class Replay extends Command {
     'Forwards ASTERIX packets from a pcap file to a unix or udp socket';
 
   static flags = {
-    destination: flags.string({
-      char: 'd',
-      default: 'udp4://localhost:8600',
-      description:
-        'The destination to forward the ASTERIX messages to.\n' +
-        'e.g: unix:/tmp/asterix.socket or udp4://localhost:8600',
-    }),
+    destination: appFlags.destination(),
     'max-count': flags.integer({
       char: 'n',
       description: 'Number of messages forwarded before exiting',
       default: Infinity,
     }),
-    verbose: flags.boolean({
-      char: 'v',
-      description: 'Verbose output',
-      default: false,
-    }),
+    verbose: appFlags.verbose(),
     'source-format': flags.string({
       description: 'Source format (udp4 or MAC/LLC)',
       default: 'udp4',
@@ -119,66 +109,21 @@ export default class Replay extends Command {
 
   async run(): Promise<void> {
     const { flags } = this.parse(Replay);
+
+    if (flags.destination == null) {
+      throw new Error('flags.destination is not set, should never happen.');
+    }
+
     const verbose = flags.verbose;
     if (verbose) {
       logger.level = 'trace';
     }
 
     /**
-     * Check destination
+     * Parse destination
      */
-    let destination: DestinationStreamConfig | null = null;
-
-    try {
-      const url = new URL(flags.destination);
-
-      switch (url.protocol) {
-        case 'udp:':
-        case 'udp4:':
-        case 'udp6:': {
-          destination = {
-            type: 'udp',
-            port: parseInt(url.port || `8600`, 10),
-            hostname: url.hostname,
-          };
-          break;
-        }
-        case 'unix:': {
-          destination = {
-            type: 'unix',
-            pathname: url.pathname,
-          };
-          break;
-        }
-        default:
-          throw new Error(
-            `${url.protocol} is not a supported destination protocole.`,
-          );
-      }
-    } catch (error) {
-      this.error(
-        `${flags.destination} is not a validation destination: ${error.message}`,
-      );
-    }
-
-    logger.trace(`Destination is %o`, destination);
-
-    /**
-     * Check destination socket existence if applicable
-     */
-    if (destination.type === 'unix') {
-      try {
-        const stats = fs.statSync(destination.pathname);
-
-        if (!stats.isSocket()) {
-          this.error(`${destination.pathname} is not a unix socket !`);
-        }
-      } catch (error) {
-        this.error(`Could not read ${destination.pathname}: ${error.message}`);
-      }
-
-      logger.trace(`${destination.pathname} is a proper socket`);
-    }
+    const destination = parseDestination(flags.destination);
+    logger.info(`Destination is %o`, destination);
 
     try {
       await this.readAndForward({ destination });

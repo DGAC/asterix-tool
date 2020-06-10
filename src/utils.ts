@@ -1,6 +1,7 @@
 import fs from 'fs';
 import dgram from 'dgram';
 import unixDgram from 'unix-dgram';
+import { URL } from 'url';
 
 export const delay = (
   d: number,
@@ -45,6 +46,38 @@ export type DestinationStreamConfig =
 interface Forwarder {
   client: unixDgram.UnixSocket | dgram.Socket;
   send(buf: Buffer): Promise<void>;
+}
+
+export function parseDestination(
+  input: string | undefined | null,
+): DestinationStreamConfig {
+  if (input == null) {
+    throw new Error('Invalid argument, input must be a string');
+  }
+
+  const url = new URL(input);
+
+  switch (url.protocol) {
+    case 'udp:':
+    case 'udp4:':
+    case 'udp6:': {
+      return {
+        type: 'udp',
+        port: parseInt(url.port || `8600`, 10),
+        hostname: url.hostname,
+      };
+    }
+    case 'unix:': {
+      return {
+        type: 'unix',
+        pathname: url.pathname,
+      };
+    }
+    default:
+      throw new Error(
+        `${url.protocol} is not a supported destination protocole.`,
+      );
+  }
 }
 
 export async function createWriteStream<T extends Forwarder>(

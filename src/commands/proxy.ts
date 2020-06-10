@@ -7,23 +7,15 @@ import os from 'os';
 import { AsterixTransform } from '../stream/AsterixChunkTransform';
 import { promisify } from 'util';
 const pipeline = promisify(stream.pipeline);
+import * as appFlags from '../flags';
+import { parseDestination, createWriteStream } from '../utils';
 
 export default class Proxy extends Command {
   static description = 'Proxies UDP multicast ASTERIX to a UNIX socket';
 
   static flags = {
-    verbose: flags.boolean({
-      char: 'v',
-      description: 'Verbose output',
-      default: false,
-    }),
-    // destination: flags.string({
-    //   char: 'd',
-    //   default: 'udp4://localhost:8600',
-    //   description:
-    //     'The destination to forward the ASTERIX messages to.\n' +
-    //     'e.g: unix:/tmp/asterix.socket or udp4://localhost:8600',
-    // }),
+    verbose: appFlags.verbose(),
+    destination: appFlags.destination(),
     port: flags.integer({
       char: 'p',
       default: 8600,
@@ -47,6 +39,9 @@ export default class Proxy extends Command {
     }
 
     try {
+      /**
+       * Validate data source
+       */
       if (!ipAddr.isValid(args['multicast-group'])) {
         throw new Error(
           `${args['multicast-group']} is not a valid IP address !`,
@@ -61,6 +56,18 @@ export default class Proxy extends Command {
         );
       }
 
+      /**
+       * Validate destination
+       */
+
+      const destination = parseDestination(flags.destination);
+      logger.info(`Destination is %o`, destination);
+
+      const destinationStream = await createWriteStream(destination);
+
+      /**
+       * Create input stream
+       */
       const client = dgram.createSocket({
         type: mcastGroup.kind() === 'ipv4' ? 'udp4' : 'udp6',
         reuseAddr: true,
@@ -138,10 +145,11 @@ export default class Proxy extends Command {
             //   return;
             // }
 
-            logger.debug(`CAT ${obj.cat} (${obj.asterix.length})`);
-
             try {
-              // await destSocket.send(obj.asterix);
+              await destinationStream.send(obj.asterix);
+              logger.debug(
+                `Forwarded: CAT ${obj.cat} (${obj.asterix.length} bytes)`,
+              );
               itemCount++;
             } catch (error) {
               cb(error);
