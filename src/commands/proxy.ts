@@ -138,7 +138,7 @@ export default class Proxy extends Command {
             //   return;
             // }
 
-            logger.debug(`${obj.ts.toISOString()}: CAT ${obj.cat}`);
+            logger.debug(`CAT ${obj.cat} (${obj.asterix.length})`);
 
             try {
               // await destSocket.send(obj.asterix);
