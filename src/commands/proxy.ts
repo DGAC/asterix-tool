@@ -73,9 +73,14 @@ export default class Proxy extends Command {
         reuseAddr: true,
       });
 
+      client.on('error', (error) => {
+        this.error(error);
+      });
+
       client.bind(
         {
           port: flags.port,
+          exclusive: false,
         },
         () => {
           logger.info('Socket bound');
