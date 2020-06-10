@@ -1,17 +1,24 @@
 import { Transform, TransformOptions, TransformCallback } from 'stream';
 import { RawPacket } from './PCAPParser';
+import { logger } from '../logger';
 
 export class AsterixTransform extends Transform {
   private shouldCancel = false;
   private count = 0;
+  private errorOnInvalid = false;
 
-  constructor(options: TransformOptions = {}) {
+  constructor({
+    errorOnInvalid = true,
+    ...options
+  }: TransformOptions & { errorOnInvalid?: boolean } = {}) {
     super({
       ...options,
       allowHalfOpen: false,
       readableObjectMode: true,
       writableObjectMode: true,
     });
+
+    this.errorOnInvalid = errorOnInvalid;
   }
 
   static readCategory(chunk: Buffer): number {
@@ -39,10 +46,15 @@ export class AsterixTransform extends Transform {
 
         const cat = AsterixTransform.readCategory(remainder);
         const len = AsterixTransform.readLen(remainder);
-        if (!len) {
-          throw new Error(
-            'Could not extract length from ASTERIX packet. Is the file format right ?',
-          );
+        if (!len || !cat) {
+          if (this.errorOnInvalid) {
+            throw new Error(
+              'Could not extract length from ASTERIX packet. Is the file format right ?',
+            );
+          }
+
+          logger.debug(`Non-ASTERIX packet found (${packet.length}bytes)`);
+          break;
         }
 
         const asterix = remainder.slice(0, len);

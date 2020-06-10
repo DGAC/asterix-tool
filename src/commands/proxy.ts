@@ -1,10 +1,10 @@
 import { Command, flags } from '@oclif/command';
-import stream from 'stream';
+import stream, { Stream } from 'stream';
 import { logger } from '../logger';
 import ipAddr from 'ipaddr.js';
 import dgram from 'dgram';
 import os from 'os';
-
+import { AsterixTransform } from '../stream/AsterixChunkTransform';
 import { promisify } from 'util';
 const pipeline = promisify(stream.pipeline);
 
@@ -101,13 +101,54 @@ export default class Proxy extends Command {
         });
       });
 
+      let itemCount = 0;
+      const source = new Stream.Transform({
+        readableObjectMode: true,
+        transform(chunk: Buffer, encoding, cb) {
+          this.push({ ts: new Date(), packet: chunk });
+          cb();
+        },
+      });
+
       client.on('message', (message, remote) => {
+        source.write(message);
         console.log(
           `Received ${message.length} bytes from ${remote.address} (${remote.port})`,
         );
       });
 
       console.log('Socket bound !');
+
+      const st = await pipeline(
+        source,
+        new AsterixTransform({ errorOnInvalid: false }),
+        new Stream.Writable({
+          objectMode: true,
+          async write(obj, encoding, cb): Promise<void> {
+            // if (itemCount >= flags['max-count']) {
+            //   logger.trace(
+            //     `Count is ${itemCount}, higher than ${flags['max-count']}`,
+            //   );
+
+            //   cb();
+            //   this.end();
+            //   return;
+            // }
+
+            logger.debug(`${obj.ts.toISOString()}: CAT ${obj.cat}`);
+
+            try {
+              // await destSocket.send(obj.asterix);
+              itemCount++;
+            } catch (error) {
+              cb(error);
+              return;
+            }
+
+            cb();
+          },
+        }),
+      );
     } catch (error) {
       this.error(error);
     }
