@@ -66,9 +66,14 @@ export default class Proxy extends Command {
         reuseAddr: true,
       });
 
-      client.bind({
-        port: flags.port,
-      });
+      client.bind(
+        {
+          port: flags.port,
+        },
+        () => {
+          logger.info('Socket bound');
+        },
+      );
 
       client.once('listening', () => {
         const netifs = os.networkInterfaces();
@@ -90,19 +95,19 @@ export default class Proxy extends Command {
           });
 
           if (!membershipAddr) {
-            console.log(`Interface ${netif} has no valid IP addr`);
+            logger.info(`Interface ${netif} has no valid IP addr`);
             return;
           }
 
           client.addMembership(mcastGroup.toString(), membershipAddr.address);
-          console.log(
+          logger.info(
             `Listening on interface ${netif}/${membershipAddr.address}`,
           );
         });
       });
 
       let itemCount = 0;
-      const source = new Stream.Transform({
+      const sourceSt = new Stream.Transform({
         readableObjectMode: true,
         transform(chunk: Buffer, encoding, cb) {
           this.push({ ts: new Date(), packet: chunk });
@@ -111,16 +116,14 @@ export default class Proxy extends Command {
       });
 
       client.on('message', (message, remote) => {
-        source.write(message);
-        console.log(
+        sourceSt.write(message);
+        logger.trace(
           `Received ${message.length} bytes from ${remote.address} (${remote.port})`,
         );
       });
 
-      console.log('Socket bound !');
-
-      const st = await pipeline(
-        source,
+      await pipeline(
+        sourceSt,
         new AsterixTransform({ errorOnInvalid: false }),
         new Stream.Writable({
           objectMode: true,
