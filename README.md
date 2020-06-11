@@ -23,7 +23,7 @@ $ npm install -g @dgac/asterix-tool
 $ asterix-tool COMMAND
 running command...
 $ asterix-tool (-v|--version|version)
-@dgac/asterix-tool/0.1.0 linux-x64 node-v14.3.0
+@dgac/asterix-tool/0.2.0 linux-x64 node-v14.3.0
 $ asterix-tool --help [COMMAND]
 USAGE
   $ asterix-tool COMMAND
@@ -73,7 +73,7 @@ OPTIONS
   --source-format=udp4|macllc  [default: udp4] Source format (udp4 or MAC/LLC)
 ```
 
-_See code: [src/commands/info.ts](https://github.com/DGAC/asterix-tool/blob/v0.1.0/src/commands/info.ts)_
+_See code: [src/commands/info.ts](https://github.com/DGAC/asterix-tool/blob/v0.2.0/src/commands/info.ts)_
 
 ## `asterix-tool proxy MULTICAST-GROUP`
 
@@ -88,11 +88,18 @@ ARGUMENTS
                    e.g: 232.1.1.1 or ff02::fb
 
 OPTIONS
-  -p, --port=port  [default: 8600] port.
-  -v, --verbose    Verbose output
+  -d, --destination=destination  [default: udp4://localhost:8600] The destination to forward the ASTERIX messages to.
+                                 e.g: unix:/tmp/asterix.socket or udp4://localhost:8600
+
+  -i, --interface=interface      [default: all] Network interface.
+                                 Default value is 'all'
+
+  -p, --port=port                [default: 8600] Port number to listen to.
+
+  -v, --verbose                  Verbose output
 ```
 
-_See code: [src/commands/proxy.ts](https://github.com/DGAC/asterix-tool/blob/v0.1.0/src/commands/proxy.ts)_
+_See code: [src/commands/proxy.ts](https://github.com/DGAC/asterix-tool/blob/v0.2.0/src/commands/proxy.ts)_
 
 ## `asterix-tool replay SOURCE_FILE`
 
@@ -121,5 +128,5 @@ OPTIONS
                                        For instance, a value of 2 will process the file twice at fast as it was record.
 ```
 
-_See code: [src/commands/replay.ts](https://github.com/DGAC/asterix-tool/blob/v0.1.0/src/commands/replay.ts)_
+_See code: [src/commands/replay.ts](https://github.com/DGAC/asterix-tool/blob/v0.2.0/src/commands/replay.ts)_
 <!-- commandsstop -->
