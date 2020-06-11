@@ -19,7 +19,12 @@ export default class Proxy extends Command {
     port: flags.integer({
       char: 'p',
       default: 8600,
-      description: 'port.',
+      description: 'Port number to listen to.',
+    }),
+    interface: flags.string({
+      char: 'i',
+      description: 'Network interface.\n' + "Default value is 'all'",
+      default: 'all',
     }),
   };
 
@@ -88,9 +93,32 @@ export default class Proxy extends Command {
       );
 
       client.once('listening', () => {
-        const netifs = os.networkInterfaces();
+        const knownInterfaces = os.networkInterfaces();
 
-        Object.entries(netifs).forEach(([netif, addresses]) => {
+        const netifs = Object.entries(knownInterfaces).filter(
+          ([netif, addresses]) => {
+            if (!addresses) {
+              return false;
+            }
+
+            if (flags.interface === 'all') {
+              return true;
+            }
+
+            return netif === flags.interface;
+          },
+        );
+
+        if (netifs.length === 0) {
+          this.error(
+            `Could not find network interface ${
+              flags.interface
+            }. Valid values are ${Object.keys(knownInterfaces).join(', ')}`,
+          );
+        }
+
+        let oneInterfaceBound = false;
+        netifs.forEach(([netif, addresses]) => {
           if (!addresses || addresses.length === 0) {
             return;
           }
@@ -112,10 +140,15 @@ export default class Proxy extends Command {
           }
 
           client.addMembership(mcastGroup.toString(), membershipAddr.address);
+          oneInterfaceBound = true;
           logger.info(
             `Listening on interface ${netif}/${membershipAddr.address}`,
           );
         });
+
+        if (!oneInterfaceBound) {
+          this.error('No suitable network interface could be found');
+        }
       });
 
       let itemCount = 0;
