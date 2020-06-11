@@ -151,7 +151,7 @@ export default class Proxy extends Command {
         }
       });
 
-      let itemCount = 0;
+      // let itemCount = 0;
       const sourceSt = new Stream.Transform({
         readableObjectMode: true,
         transform(chunk: Buffer, encoding, cb) {
@@ -188,7 +188,7 @@ export default class Proxy extends Command {
               logger.debug(
                 `Forwarded: CAT ${obj.cat} (${obj.asterix.length} bytes)`,
               );
-              itemCount++;
+              // itemCount++;
             } catch (error) {
               cb(error);
               return;
