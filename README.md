@@ -118,7 +118,7 @@ OPTIONS
                                        to.
                                        e.g: unix:/tmp/asterix.socket or udp4://localhost:8600
 
-  -n, --max-count=max-count            [default: Infinity] Number of messages forwarded before exiting
+  -n, --max-count=max-count            Number of messages forwarded before exiting
 
   -v, --verbose                        Verbose output
 
