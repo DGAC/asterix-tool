@@ -1,7 +1,7 @@
 {
   "name": "@dgac/asterix-tool",
   "description": "",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "author": "Benjamin BERET <benjamin.beret@aviation-civile.gouv.fr>",
   "license": "MIT",
   "bin": {
