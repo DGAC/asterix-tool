@@ -46,6 +46,8 @@
     "node": ">=10.0.0"
   },
   "files": [
+    "/yarn.lock",
+    "/oclif.manifest.json",
     "/bin",
     "/lib"
   ],
@@ -64,7 +66,7 @@
   "repository": "DGAC/asterix-tool",
   "scripts": {
     "posttest": "eslint . --ext .ts --config .eslintrc.js",
-    "prepack": "rm -rf lib && tsc -b && oclif-dev readme",
+    "prepack": "rm -rf lib && tsc -b && oclif-dev manifest && oclif-dev readme",
     "test": "echo NO TESTS",
     "typecheck": "tsc --noEmit",
     "version": "oclif-dev readme && git add README.md"
