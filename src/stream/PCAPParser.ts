@@ -178,7 +178,7 @@ export class PCAPParser extends Transform {
             } catch (err) {
               logger.fatal(
                 `Unable to parse packet (#${this.count}):`,
-                err.message,
+                (err as Error).message,
               );
               process.exit(1);
               return { done: true, value: null };

@@ -88,7 +88,7 @@ export default class Info extends Command {
           new StripHeaders({
             mode: flags['source-format'] === 'macllc' ? 'macllc' : 'udp',
           }),
-          new AsterixTransform(),
+          new AsterixTransform({ errorOnInvalid: false }),
           new Stream.Writable({
             objectMode: true,
             async write(obj, encoding, cb): Promise<void> {
@@ -180,7 +180,7 @@ export default class Info extends Command {
         },
       });
     } catch (error) {
-      this.error(error);
+      this.error(error as any);
     }
   }
 }

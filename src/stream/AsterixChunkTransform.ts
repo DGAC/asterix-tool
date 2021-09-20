@@ -71,7 +71,7 @@ export class AsterixTransform extends Transform {
       this.count++;
       done();
     } catch (error) {
-      done(error);
+      done(error as Error);
     }
   }
 }
