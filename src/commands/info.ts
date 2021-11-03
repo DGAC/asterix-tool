@@ -152,6 +152,7 @@ export default class Info extends Command {
               )
             : 'UNKNOWN',
         ],
+        ['Total messages:', stats.asterix.totalMessages],
       ];
 
       cli.table(

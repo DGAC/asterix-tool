@@ -47,7 +47,10 @@ export class StripHeaders extends Transform {
       packet = packet.slice(0, etherLen - 3);
     }
 
-    // console.log(`[StripHeaders]: Packet ${this.count}`);
+    this.log.trace(
+      `[StripHeaders]: Packet ${this.count} length=${packet.length}`,
+    );
+
     this.push({
       ...rawPacket,
       packet,

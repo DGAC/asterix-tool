@@ -5,5 +5,5 @@ export const logger = pino({
     ignore: 'pid,hostname',
     translateTime: true,
   },
-  level: 'info',
+  level: process.env.LOG_LEVEL || 'info',
 });

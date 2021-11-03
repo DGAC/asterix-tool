@@ -44,6 +44,11 @@ export class AsterixTransform extends Transform {
 
         const remainder = packet.slice(start);
 
+        if (remainder.length < 3) {
+          break;
+        }
+
+        logger.trace(`Reading packet length=${remainder.length}`);
         const cat = AsterixTransform.readCategory(remainder);
         const len = AsterixTransform.readLen(remainder);
         if (!len || !cat) {
